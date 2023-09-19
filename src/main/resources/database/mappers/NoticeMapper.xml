@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
-  <mapper namespace="com.winter.app.board.notice.NoticeDAO">
-  	<sql id="forPager">
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.winter.app.board.notice.NoticeDAO">
+	<sql id="forPager">
 		<choose>
-			<when test="kind=='1'">
+			<when test="kind == '1'">
 				boardtitle 
 			</when>
-			<when test="kind=='2'">
+			<when test="kind == '2'">
 				boardcontents 
 			</when>
 			<otherwise>
 				boardwriter 
 			</otherwise>
 		</choose>
+	</sql>
 	
-  	</sql>
-  	
-  	<select id="getCount" parameterType="Pager" resultType="Long">
-  		<bind name="pattern" value="'%'+_parameter.getSearch()+'%'"/>
-  		select COUNT(boardno) from notice
-  		where <include refid="forPager"></include>
-  		LIKE #{pattern}
-  	</select>
+	<select id="getCount" parameterType="Pager" resultType="Long">
+		<bind name="pattern" value="'%'+_parameter.getSearch()+'%'"/>
+			select COUNT(boardno)
+				from notice
+			where <include refid="forPager"></include> LIKE #{pattern}
+	</select>
   
   	<select id="getList" parameterType="Pager" resultType="NoticeVO" >
   		select * from notice 
@@ -36,32 +35,27 @@
   	</select>
   	
   	<insert id="add" parameterType="BoardVO">
-  		INSERT INTO NOTICE 
+  		INSERT INTO notice
   		VALUES (NULL, #{boardTitle}, #{boardWriter}, #{boardContents}, now(), 0)
   	</insert>
   	
   	<!-- Detail -->
   	<select id="getDetail" parameterType="BoardVO" resultType="NoticeVO">
-  		SELECT * FROM NOTICE WHERE BOARDNO=#{boardNo}
+  		SELECT * FROM notice WHERE boardNo = #{boardNo}
   	</select>
   	
-  	<!-- Update -->
   	<update id="setUpdate" parameterType="BoardVO">
-  		UPDATE NOTICE SET 
-  			BOARDTITLE=#{boardTitle},
-  			BOARDCONTENTS=#{boardContets}
-  		WHERE BOARDNO=#{boardNo}
+  		UPDATE notice SET 
+  			boardTitle = #{boardTitle},
+			boardContents = #{boardContents}
+		WHERE BOARDNO = #{boardNo}
   	</update>
   	
-  	
-  	<!-- 조회수 update -->
   	<update id="setHitUpdate" parameterType="BoardVO">
-  		UPDATE NOTICE SET BOARDHIT=BOARDHIT+1 WHERE BOARDNO=#{boardNo}
+  		UPDATE notice SET boardHit = boardHit + 1 WHERE boardNo = #{boardNo}
   	</update>
   	
-  	<!-- Delete -->
   	<delete id="setDelete" parameterType="BoardVO">
-  		DELETE FROM NOTICE WHERE BOARDNO=#{boardNo}
+  		DELETE FROM notice WHERE boardNo = #{boardNo}
   	</delete>
-  	
-  </mapper>
+</mapper>

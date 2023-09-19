@@ -12,14 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class DBConnectionTest {
-	
 	@Autowired
 	private DataSource dataSource;
-
+	
 	@Test
 	void dbTest() throws Exception {
 		Connection connection = dataSource.getConnection();
 		assertNotNull(connection);
 	}
-
 }

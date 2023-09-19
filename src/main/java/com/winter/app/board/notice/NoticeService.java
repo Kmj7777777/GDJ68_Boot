@@ -10,40 +10,32 @@ import com.winter.app.board.BoardVO;
 import com.winter.app.commons.Pager;
 
 @Service
-public class NoticeService implements BoardService {
-	
+public class NoticeService implements BoardService {	
 	@Autowired
 	private NoticeDAO noticeDAO;
-
-
+	
 	@Override
-	public List<BoardVO> getList(Pager pager) throws Exception {
-		// TODO Auto-generated method stub
+	public List<BoardVO> getList(Pager pager) {
 		return noticeDAO.getList(pager);
 	}
-
+	
 	@Override
-	public int add(BoardVO boardVO) throws Exception {
-		// TODO Auto-generated method stub
+	public int add(BoardVO boardVO) {
 		return noticeDAO.add(boardVO);
 	}
-
+	
 	@Override
-	public BoardVO getDetail(BoardVO boardVO) throws Exception {
-		// TODO Auto-generated method stub
+	public BoardVO getDetail(BoardVO boardVO) {
 		return noticeDAO.getDetail(boardVO);
 	}
-
+	
 	@Override
-	public int setUpdate(BoardVO boardVO) throws Exception {
-		// TODO Auto-generated method stub
+	public int setUpdate(BoardVO boardVO) {
 		return noticeDAO.setUpdate(boardVO);
 	}
-
+	
 	@Override
-	public int setDelete(BoardVO boardVO) throws Exception {
-		// TODO Auto-generated method stub
+	public int setDelete(BoardVO boardVO) {
 		return noticeDAO.setDelete(boardVO);
 	}
-
 }
