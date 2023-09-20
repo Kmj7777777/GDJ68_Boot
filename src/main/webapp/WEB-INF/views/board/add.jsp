@@ -17,7 +17,7 @@
 				
 				<div class="container-fluid">
 					<div class="row">
-						<form action="add" method="POST">
+						<form action="add" method="POST" enctype="multipart/form-data">
 							<div class="mb-3">
 								<label for="boardTitle" class="form-label">Title</label>
 								<input type="text" class="form-control" name="boardTitle" id="boardTitle" placeholder="제목">
@@ -29,6 +29,12 @@
 							<div class="mb-3">
 								<label for="boardContents" class="form-label">Contents</label>
 								<textarea class="form-control" name="boardContents" id="boardContents" rows="3"></textarea>
+							</div>
+							<div class="mb-3">
+								<input type="file" class="form-control" name="files">
+							</div>
+							<div class="mb-3">
+								<input type="file" class="form-control" name="files">
 							</div>
 							
 							<button class="btn btn-danger">Add</button>

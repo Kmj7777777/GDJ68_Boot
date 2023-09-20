@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.winter.app.board.BoardVO;
+import com.winter.app.board.FileVO;
 import com.winter.app.commons.Pager;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeController {
 	@Autowired
 	private NoticeService noticeService;
+	
+	@ModelAttribute("board")
+	public String getBoard() {
+		return "notice";
+	}
 	
 	@GetMapping("list")
 	public String getList(Pager pager, Model model) {
@@ -37,9 +44,8 @@ public class NoticeController {
 	}
 	
 	@PostMapping("add")
-	public String add(NoticeVO noticeVO) {
-		int result = noticeService.add(noticeVO);
-		// log.info("NoticeVO : {}", noticeVO);
+	public String add(NoticeVO noticeVO, MultipartFile[] files) throws Exception {
+		int result = noticeService.add(noticeVO, files);
 		return "redirect:./list";
 	}
 	
@@ -48,6 +54,13 @@ public class NoticeController {
 		BoardVO boardVO = noticeService.getDetail(noticeVO);
 		model.addAttribute("notice", boardVO);
 		return "board/detail";
+	}
+	
+	@GetMapping("fileDown")
+	public String fileDown(NoticeFileVO noticeFileVO, Model model) {
+		FileVO fileVO = noticeService.getFileDetail(noticeFileVO);
+		model.addAttribute("file", fileVO);
+		return "fileDownView";
 	}
 	
 	@GetMapping("update")

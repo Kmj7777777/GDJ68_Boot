@@ -34,14 +34,41 @@
 		limit #{startRow}, #{lastRow}
   	</select>
   	
-  	<insert id="add" parameterType="BoardVO">
+  	<insert id="add" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="boardNo">
   		INSERT INTO notice
   		VALUES (NULL, #{boardTitle}, #{boardWriter}, #{boardContents}, now(), 0)
   	</insert>
   	
+  	<insert id="fileAdd" parameterType="NoticeFileVO">
+  		INSERT INTO noticeFiles VALUES(#{fileNo}, #{boardNo}, #{fileName}, #{originalName})
+  	</insert>
+  	
   	<!-- Detail -->
-  	<select id="getDetail" parameterType="BoardVO" resultType="NoticeVO">
-  		SELECT * FROM notice WHERE boardNo = #{boardNo}
+  	<select id="getDetail" parameterType="BoardVO" resultMap="getDetailResult">
+  		SELECT *
+  			FROM notice n LEFT OUTER JOIN noticeFiles nf
+  				ON n.boardNo = nf.boardNo
+  		WHERE n.boardNo = #{boardNo}
+  	</select>
+  	
+  	<resultMap id="getDetailResult" type="NoticeVO">
+		<id column="boardNo" property="boardNo" />
+  		<result column="boardTitle" property="boardTitle" />
+  		<result column="boardWriter" property="boardWriter" />
+  		<result column="boardContents" property="boardContents" />
+  		<result column="boardDate" property="boardDate" />
+  		<result column="boardHit" property="boardHit" />
+  		
+  		<collection property="noticeFiles" javaType="List" ofType="NoticeFileVO">
+  			<id column="fileNo" property="fileNo" />
+  			<result column="boardNo" property="boardNo" />
+  			<result column="fileName" property="fileName" />
+  			<result column="originalName" property="originalName" />
+  		</collection>
+  	</resultMap>
+  	
+  	<select id="getFileDetail" parameterType="FileVO" resultType="NoticeFileVO">
+  		SELECT * FROM noticeFiles WHERE fileNo = #{fileNo}
   	</select>
   	
   	<update id="setUpdate" parameterType="BoardVO">

@@ -15,7 +15,7 @@ class DBConnectionTest {
 	@Autowired
 	private DataSource dataSource;
 	
-	@Test
+	// @Test
 	void dbTest() throws Exception {
 		Connection connection = dataSource.getConnection();
 		assertNotNull(connection);

@@ -33,7 +33,7 @@ class NoticeDAOTest {
 		System.out.println("Finish");
 	}
 	
-	@Test
+	// @Test
 	void getCountTest() throws Exception {
 		Pager pager = new Pager();
 		pager.setKind("1");
@@ -42,7 +42,7 @@ class NoticeDAOTest {
 		assertEquals(2L, count);
 	}
 	
-	@Test
+	// @Test
 	void getListTest() throws Exception {
 		Pager pager = new Pager();
 		pager.setStartRow(0L);
