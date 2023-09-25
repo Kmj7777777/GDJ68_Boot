@@ -64,6 +64,9 @@ public class MemberController {
 	
 	@PostMapping("join")
 	public String setJoin(@Valid MemberVO memberVO, BindingResult bindingResult, MultipartFile photo) {
+		// @Valid 애너테이션은 Controller에서만 사용 가능하다.
+		// memberService.testValid(memberVO, bindingResult);
+		
 		boolean check = memberService.getMemberError(memberVO, bindingResult);
 		
 		// memberVO 검증 결과가 bindingResult에 담김

@@ -1,4 +1,4 @@
-package com.winter.app.interceptor;
+package com.winter.app.interceptors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
