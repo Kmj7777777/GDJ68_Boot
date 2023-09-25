@@ -27,7 +27,7 @@
     	 			
     	 			<div class="row">
     	 				<c:forEach items="${notice.noticeFiles}" var="f">
-    	 					<img src="../files/${board}/${f.fileName}"> <!-- upload는 생략해야함 Spring Boot가 upload 디렉터리까진 알아서 찾아감 -->
+    	 					<img src="../files/${board}/${f.fileName}">
     	 					<a href="./fileDown?fileNo=${f.fileNo}">${f.originalName}</a>
     	 				</c:forEach>
     	 			</div>
