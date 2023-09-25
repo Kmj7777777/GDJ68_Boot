@@ -22,9 +22,9 @@
     	 		<div class="container-fluid">
 					<form:form modelAttribute="memberVO" action="./login" method="POST">
 						<div class="form-group">
-							<form:label path="userName">User name</form:label>
-						    <form:input path="userName" cssClass="form-control" id="userName" />
-						    <form:errors path="userName" />
+							<form:label path="username">User name</form:label>
+						    <form:input path="username" cssClass="form-control" id="username" />
+						    <form:errors path="username" />
 						</div>
 						<div class="form-group">
 						    <form:label path="password">Password</form:label>

@@ -32,22 +32,26 @@ public class MemberController {
 		session.invalidate();
 		return "redirect:../";
 	}
-	
+		
 	@GetMapping("login")
 	public void getLogin_get(@ModelAttribute MemberVO memberVO) {
 		
 	}
-	
-	@PostMapping("login")
-	public String getLogin_post(@ModelAttribute MemberVO memberVO, HttpSession session) {
-		memberVO = memberService.getLogin(memberVO);
-		if(memberVO != null) {
-			session.setAttribute("member", memberVO);
-			return "redirect:../";
-		}
 		
-		return "redirect:./login";
-	}
+	/*	
+		- Spring Security로 대체 -
+		
+		@PostMapping("login")
+		public String getLogin_post(@ModelAttribute MemberVO memberVO, HttpSession session) {
+			memberVO = memberService.getLogin(memberVO);
+			if(memberVO != null) {
+				session.setAttribute("member", memberVO);
+				return "redirect:../";
+			}
+			
+			return "redirect:./login";
+		}
+	*/
 	
 	/*
 		@GetMapping("join")
@@ -63,7 +67,7 @@ public class MemberController {
 	}
 	
 	@PostMapping("join")
-	public String setJoin(@Valid MemberVO memberVO, BindingResult bindingResult, MultipartFile photo) {
+	public String setJoin(@Valid MemberVO memberVO, BindingResult bindingResult, MultipartFile photo) throws Exception {
 		// @Valid 애너테이션은 Controller에서만 사용 가능하다.
 		// memberService.testValid(memberVO, bindingResult);
 		
@@ -74,21 +78,25 @@ public class MemberController {
 			return "member/join";
 		}
 		
+		memberService.setJoin(memberVO);
+		
 		return "redirect:../";
 	}
 	
-	@GetMapping("update")
-	public void setUpdate(HttpSession session, Model model) {
-		MemberVO memberVO = (MemberVO)session.getAttribute("member");
-		memberVO = memberService.getLogin(memberVO);
-		
-		MemberInfoVO memberInfoVO = new MemberInfoVO();
-		memberInfoVO.setName(memberVO.getName());
-		memberInfoVO.setBirth(memberVO.getBirth());
-		memberInfoVO.setEmail(memberVO.getEmail());
-		
-		model.addAttribute("memberInfoVO", memberInfoVO);
-	}
+	/*
+		@GetMapping("update")
+		public void setUpdate(HttpSession session, Model model) {
+			MemberVO memberVO = (MemberVO)session.getAttribute("member");
+			memberVO = memberService.getLogin(memberVO);
+			
+			MemberInfoVO memberInfoVO = new MemberInfoVO();
+			memberInfoVO.setName(memberVO.getName());
+			memberInfoVO.setBirth(memberVO.getBirth());
+			memberInfoVO.setEmail(memberVO.getEmail());
+			
+			model.addAttribute("memberInfoVO", memberInfoVO);
+		}
+	*/
 	
 	@PostMapping("update")
 	public void setUpdate(@Valid MemberInfoVO memberInfoVO, BindingResult bindingResult) {

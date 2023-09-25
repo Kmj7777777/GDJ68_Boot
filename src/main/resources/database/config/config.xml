@@ -6,6 +6,7 @@
 <configuration>
 	<typeAliases>
 		<typeAlias type="com.winter.app.member.MemberVO" alias="MemberVO" />
+		<typeAlias type="com.winter.app.member.RoleVO" alias="RoleVO" />
 		<typeAlias type="com.winter.app.board.BoardVO" alias="BoardVO" />
 		<typeAlias type="com.winter.app.board.FileVO" alias="FileVO" />
 		<typeAlias type="com.winter.app.board.notice.NoticeVO" alias="NoticeVO" />
