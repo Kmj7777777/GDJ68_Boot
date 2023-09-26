@@ -1,5 +1,6 @@
 package com.winter.app.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,23 +10,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-/*
-	Spring Security는 일반 Session 객체를 사용하지 않고,
-	Session 객체에 Spring Security 전용 Session을 만들어놓고 그 Session을 사용한다.
-*/
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+	@Autowired
+	private SecuritySuccessHandler handler;
+	
 	@Bean
 	PasswordEncoder passwordEncoder() {
+		// 비밀번호 해싱(암호화) 및 비교에 사용되는 객체
 		return new BCryptPasswordEncoder();
 	}
 	
-	// Security를 거치지 않아야 하는 List
+	/*
+		webSecurityCustomizer 메서드는 WebSecurity 객체를 구성하는 초기 단계에서 실행된다.
+		즉, securityFilterChain 메서드 이전에 실행된다.
+		(전체적인 설정은 webSecurityCustomizer 메서드에서, 세부적인 설정은 securityFilterChain 메서드에서 해야 하는 것 같다.)
+	*/
+	// 람다식 사용
 	@Bean
 	WebSecurityCustomizer webSecurityCustomizer() {
-		// 람다식 사용
 		return web -> web
+				// 보안 검사를 수행하지 않을 경로 설정
 				.ignoring()
 					.antMatchers("/css/**")
 					.antMatchers("/img/**")
@@ -34,6 +40,7 @@ public class SecurityConfig {
 	}
 	
 	/*
+		// 람다식 사용 X
  		@Bean
 	    public WebSecurityCustomizer webSecurityCustomizer() {
 	        return new WebSecurityCustomizer() {
@@ -50,7 +57,7 @@ public class SecurityConfig {
 	*/
 	
 	/*
-		SecurityFilterChain은 Servlet Filter 다음으로 실행된다고 한다.
+		SecurityFilterChain은 Servlet Filter 다음으로 실행된다.
 		Request → Servlet Filter → SecurityFilterChain → Dispatcher Servlet → ...
 	*/
 	@Bean
@@ -67,23 +74,36 @@ public class SecurityConfig {
 				.antMatchers("/").permitAll() // permitAll() : 모두 허용
 				.and()
 			.formLogin()
-				/*
-					쉽게 설명하자면 Spring Security에게 "내 웹 애플리케이션의 로그인 페이지 경로는 /member/login이야~"라고 알려주는(지정) 작업이다.
-					이제 지정한 로그인 페이지에서 자격 증명(사용자 아이디 및 비밀번호)을 제출하면 UserDetailsService 인터페이스를 구현한 Service 클래스에
-					정의된 loadUserByUsername 메서드를 사용하여 사용자의 자격 증명을 처리(로그인 인증)한다. 
-				*/
-				.loginPage("/member/login")
-				.defaultSuccessUrl("/") // 로그인 인증 성공 시 Redirect URL
-				.failureUrl("/member/login") // 로그인 인증 실패 시 Redirect URL
-				.permitAll() // ???
+				.loginPage("/member/login")//내장된 로그인폼을 사용하지 않고, 개발자가 만든 폼을 사용
+				.defaultSuccessUrl("/")
+				.failureUrl("/member/login")
+				//.successHandler(handler)
+				//.failureUrl("/member/login?message=LoginFail")
+				.failureHandler(getFailHandler())
+				.permitAll()
 				.and()
 			.logout()
 				.logoutUrl("/member/logout") // 해당 경로로 요청이 오면 로그아웃 처리
-				.logoutSuccessUrl("/") // 로그아웃 처리 후 Redirect URL
-				.invalidateHttpSession(true); // 표준 세션과 Spring Security 세션 모두 무효화
+				// .logoutSuccessUrl("/") // 로그아웃 처리 후 Redirect URL
+				.addLogoutHandler(getLogoutAdd())
+				.logoutSuccessHandler(getLogoutHandler())
+				.invalidateHttpSession(true) // HttpSession에 저장된 모든 데이터 제거 : Spring Security는 사용자 인증 및 권한과 관련된 데이터를 HttpSession에 저장하고 관리한다.
+				.deleteCookies("JSESSIONID");
 				// .and()
 			// .sessionManagement();
 		
 		return httpSecurity.build();
+	}
+	
+	private SecurityLogoutHandler getLogoutHandler() {
+		return new SecurityLogoutHandler();
+	}
+	
+	private SecurityLogoutAdd getLogoutAdd() {
+		return new SecurityLogoutAdd();
+	}
+	
+	private SecurityFailHandler getFailHandler() {
+		return new SecurityFailHandler();
 	}
 }

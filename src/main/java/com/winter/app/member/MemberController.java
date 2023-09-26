@@ -6,8 +6,9 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.winter.app.main.MemberInfoVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,17 +26,31 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@GetMapping("info")
+	public void getInfo() {
+		
+	}
+	
 	@GetMapping("logout")
 	public String getLogout(HttpSession session) {
 		session.invalidate();
 		return "redirect:../";
 	}
-		
+	
 	@GetMapping("login")
-	public void getLogin_get(@ModelAttribute MemberVO memberVO) {
+	public String getLogin(@ModelAttribute MemberVO memberVO)throws Exception{
+		SecurityContext context = SecurityContextHolder.getContext();
+		String check = context.getAuthentication().getPrincipal().toString();
 		
+		log.info("========== Name : {} ==========", context.getAuthentication().getPrincipal().toString());
+		
+		if(!check.equals("anonymousUser")) {
+			return "redirect:/";
+		}
+		
+		return "member/login";
 	}
-		
+	
 	/*	
 		- Spring Security로 대체 -
 		
