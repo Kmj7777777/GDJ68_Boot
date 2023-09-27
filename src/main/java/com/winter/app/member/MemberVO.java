@@ -3,6 +3,7 @@ package com.winter.app.member;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +20,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class MemberVO extends MemberInfoVO implements UserDetails { // UserDetails 인터페이스 구현
+public class MemberVO extends MemberInfoVO implements UserDetails, OAuth2User { // UserDetails 인터페이스 구현
 	@NotBlank // == NOT NULL
 	@Size(min = 2, max = 12, message = "2자 이상 12자 이하이어야 합니다.") 
 	private String username;
@@ -31,6 +33,8 @@ public class MemberVO extends MemberInfoVO implements UserDetails { // UserDetai
 	private Boolean enabled;
 	
 	private List<RoleVO> roles;
+	
+	private Map<String, Object> attributes;
 	
 	/*
 		Spring Security는 hasRole과 같은 메서드를 처리할 때
@@ -67,5 +71,12 @@ public class MemberVO extends MemberInfoVO implements UserDetails { // UserDetai
 	@Override
 	public boolean isEnabled() {
 		return this.enabled;
+	}
+	
+	
+	// OAuth2User
+	@Override
+	public Map<String, Object> getAttributes() {
+		return this.attributes;
 	}
 }

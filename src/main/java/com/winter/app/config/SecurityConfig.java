@@ -102,6 +102,11 @@ public class SecurityConfig {
 				.key("rememberKey") // 인증받은 사용자의 정보로 token 생성에 사용 되는 값, 필수 사항, 개발자 임의 값 설정
 				.userDetailsService(memberService)
 				.authenticationSuccessHandler(handler)
+				.and()
+			.oauth2Login()
+				// 해석 : 최종 지점(Endpoint)은 ↓ 아래 지정한 서비스 클래스의 loadUser 메서드이다.(즉, Access Token을 통해 받아온 사용자 정보를 loadUser 메서드에 넘겨준다.)
+				.userInfoEndpoint()
+				.userService(memberService)
 				.and();
 			// .sessionManagement();
 		

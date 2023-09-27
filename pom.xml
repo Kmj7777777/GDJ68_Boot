@@ -18,6 +18,12 @@
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+		<!-- OAuth 2.0 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-jasper -->
 		<dependency>
 		    <groupId>org.apache.tomcat.embed</groupId>
