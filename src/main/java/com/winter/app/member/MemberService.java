@@ -114,12 +114,7 @@ public class MemberService extends DefaultOAuth2UserService implements UserDetai
 		
 		MemberVO memberVO = new MemberVO();
 		memberVO.setUsername(username);
-		try {
-			memberVO = memberDAO.getMember(memberVO);
-		}catch (Exception e) {
-			memberVO = null;
-			e.printStackTrace();
-		}
+		memberVO = memberDAO.getMember(memberVO);
 		
 		return memberVO; // 반환 시점에 Spring Security가 입력된 패스워드와 memberVO의 패스워드를 비교 후 Spring Security Session에 저장해준다고 한다.
 	}
