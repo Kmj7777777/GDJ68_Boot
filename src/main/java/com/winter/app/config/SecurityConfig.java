@@ -10,17 +10,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.winter.app.member.MemberService;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 	@Autowired
 	private SecuritySuccessHandler handler;
 	
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		// 비밀번호 해싱(암호화) 및 비교에 사용되는 객체
-		return new BCryptPasswordEncoder();
-	}
+	@Autowired
+	private MemberService memberService;
+	
+	/*
+		@Bean
+		PasswordEncoder passwordEncoder() {
+			// 비밀번호 해싱(암호화) 및 비교에 사용되는 객체
+			return new BCryptPasswordEncoder();
+		}
+	*/
 	
 	/*
 		webSecurityCustomizer 메서드는 WebSecurity 객체를 구성하는 초기 단계에서 실행된다.
@@ -65,8 +72,8 @@ public class SecurityConfig {
 		httpSecurity
 			.cors()
 			.and()
-			.csrf()
-			.disable()
+			// .csrf()
+			// .disable()
 			.authorizeHttpRequests()
 				// .antMatchers("/notice/add").authenticated() // authenticated() : 로그인한 사용자는 허용
 				.antMatchers("/notice/add").hasRole("ADMIN") // hasRole("ADMIN") : ADMIN 권한만 허용
@@ -88,8 +95,14 @@ public class SecurityConfig {
 				.addLogoutHandler(getLogoutAdd())
 				.logoutSuccessHandler(getLogoutHandler())
 				.invalidateHttpSession(true) // HttpSession에 저장된 모든 데이터 제거 : Spring Security는 사용자 인증 및 권한과 관련된 데이터를 HttpSession에 저장하고 관리한다.
-				.deleteCookies("JSESSIONID");
-				// .and()
+				.deleteCookies("JSESSIONID")
+				.and()
+			.rememberMe()
+				.tokenValiditySeconds(60) // 초 단위
+				.key("rememberKey") // 인증받은 사용자의 정보로 token 생성에 사용 되는 값, 필수 사항, 개발자 임의 값 설정
+				.userDetailsService(memberService)
+				.authenticationSuccessHandler(handler)
+				.and();
 			// .sessionManagement();
 		
 		return httpSecurity.build();

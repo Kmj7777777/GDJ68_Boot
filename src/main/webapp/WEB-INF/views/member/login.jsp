@@ -38,6 +38,10 @@
 						    <form:password path="password" cssClass="form-control" id="password" />
 						    <form:errors path="password" />
 					  	</div>
+					  	<div class="form-group">
+					  		<label for="remember">Remember Me</label>
+						    <input type="checkbox" name="remember-me" id="remember" class="form-control">
+					  	</div>
 						  
 						  <form:button>Submit</form:button>
 					</form:form>
@@ -55,6 +59,8 @@
 		if(msg != ""){
 			alert(msg);
 		}
+		
+		// history.replaceState({}, null, location.pathname);
 	</script>
 </body>
 </html>

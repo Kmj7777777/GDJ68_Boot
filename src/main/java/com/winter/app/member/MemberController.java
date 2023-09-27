@@ -6,9 +6,11 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,26 +98,33 @@ public class MemberController {
 		return "redirect:../";
 	}
 	
-	/*
-		@GetMapping("update")
-		public void setUpdate(HttpSession session, Model model) {
+	@GetMapping("update")
+	public void setUpdate(@AuthenticationPrincipal MemberVO memberVO, Model model) {
+		/*
 			MemberVO memberVO = (MemberVO)session.getAttribute("member");
 			memberVO = memberService.getLogin(memberVO);
-			
-			MemberInfoVO memberInfoVO = new MemberInfoVO();
-			memberInfoVO.setName(memberVO.getName());
-			memberInfoVO.setBirth(memberVO.getBirth());
-			memberInfoVO.setEmail(memberVO.getEmail());
-			
-			model.addAttribute("memberInfoVO", memberInfoVO);
-		}
-	*/
+		*/
+		
+		MemberInfoVO memberInfoVO = new MemberInfoVO();
+		memberInfoVO.setName(memberVO.getName());
+		memberInfoVO.setBirth(memberVO.getBirth());
+		memberInfoVO.setEmail(memberVO.getEmail());
+		
+		model.addAttribute("memberInfoVO", memberInfoVO);
+	}
 	
 	@PostMapping("update")
-	public void setUpdate(@Valid MemberInfoVO memberInfoVO, BindingResult bindingResult) {
-		List<FieldError> errors = bindingResult.getFieldErrors();
-		for(FieldError error : errors) {
-			log.info(error.getField());
-		}
+	public String setUpdate(@Valid MemberInfoVO memberInfoVO, BindingResult bindingResult) {
+		MemberVO memberVO = (MemberVO)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		memberVO.setEmail("UpdateEmail@naver.com");
+		
+		/*
+			List<FieldError> errors = bindingResult.getFieldErrors();
+			for(FieldError error : errors) {
+				log.info(error.getField());
+			}
+		*/
+		
+		return "redirect:/";
 	}
 }
