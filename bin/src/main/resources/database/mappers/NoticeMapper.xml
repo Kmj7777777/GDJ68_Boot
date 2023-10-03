@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.winter.app.board.notice.NoticeDAO">
+	<sql id="forPager">
+		<choose>
+			<when test="kind == '1'">
+				boardtitle 
+			</when>
+			<when test="kind == '2'">
+				boardcontents 
+			</when>
+			<otherwise>
+				boardwriter 
+			</otherwise>
+		</choose>
+	</sql>
+	
+	<select id="getCount" parameterType="Pager" resultType="Long">
+		<bind name="pattern" value="'%'+_parameter.getSearch()+'%'"/>
+			select COUNT(boardno)
+				from notice
+			where <include refid="forPager"></include> LIKE #{pattern}
+	</select>
+  
+  	<select id="getList" parameterType="Pager" resultType="NoticeVO" >
+  		select * from notice 
+  		where 
+  				<include refid="forPager"></include>
+  		 		like concat('%', #{search}, '%')
+		order by boardno desc 
+		limit #{startRow}, #{lastRow}
+  	</select>
+  	
+  	<insert id="add" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="boardNo">
+  		INSERT INTO notice
+  		VALUES (NULL, #{boardTitle}, #{boardWriter}, #{boardContents}, now(), 0)
+  	</insert>
+  	
+  	<insert id="fileAdd" parameterType="NoticeFileVO">
+  		INSERT INTO noticeFiles VALUES(#{fileNo}, #{boardNo}, #{fileName}, #{originalName})
+  	</insert>
+  	
+  	<!-- Detail -->
+  	<select id="getDetail" parameterType="BoardVO" resultMap="getDetailResult">
+  		SELECT *
+  			FROM notice n LEFT OUTER JOIN noticeFiles nf
+  				ON n.boardNo = nf.boardNo
+  		WHERE n.boardNo = #{boardNo}
+  	</select>
+  	
+  	<resultMap id="getDetailResult" type="NoticeVO">
+		<id column="boardNo" property="boardNo" />
+  		<result column="boardTitle" property="boardTitle" />
+  		<result column="boardWriter" property="boardWriter" />
+  		<result column="boardContents" property="boardContents" />
+  		<result column="boardDate" property="boardDate" />
+  		<result column="boardHit" property="boardHit" />
+  		
+  		<collection property="noticeFiles" javaType="List" ofType="NoticeFileVO">
+  			<id column="fileNo" property="fileNo" />
+  			<result column="boardNo" property="boardNo" />
+  			<result column="fileName" property="fileName" />
+  			<result column="originalName" property="originalName" />
+  		</collection>
+  	</resultMap>
+  	
+  	<select id="getFileDetail" parameterType="FileVO" resultType="NoticeFileVO">
+  		SELECT * FROM noticeFiles WHERE fileNo = #{fileNo}
+  	</select>
+  	
+  	<update id="setUpdate" parameterType="BoardVO">
+  		UPDATE notice SET 
+  			boardTitle = #{boardTitle},
+			boardContents = #{boardContents}
+		WHERE BOARDNO = #{boardNo}
+  	</update>
+  	
+  	<update id="setHitUpdate" parameterType="BoardVO">
+  		UPDATE notice SET boardHit = boardHit + 1 WHERE boardNo = #{boardNo}
+  	</update>
+  	
+  	<delete id="setDelete" parameterType="BoardVO">
+  		DELETE FROM notice WHERE boardNo = #{boardNo}
+  	</delete>
+</mapper>

@@ -10,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 public class TestScheduler {
 	
 	// @Scheduled(fixedRateString = "2000", initialDelay = 5000) // == fixedRate = 2000, initialDelay : 서버 초기화 완료 후 5초 후 실행
-	public void useFixedRate() {
+	@Scheduled(fixedDelay = 1000)
+	public void useFixedRate() throws Exception {
+		
 		log.info("==================== Fixed Rate ====================");
 	}
 	

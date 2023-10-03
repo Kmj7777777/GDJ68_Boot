@@ -12,24 +12,27 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 public class MessageConfig implements WebMvcConfigurer {
+	
 	@Bean
 	public LocaleResolver localeResolver() {
 		// Session 방식
-		SessionLocaleResolver resolver = new SessionLocaleResolver();
-		resolver.setDefaultLocale(Locale.KOREAN);
+		SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+		sessionLocaleResolver.setDefaultLocale(Locale.KOREA);
 		
-		// Cookie 방식
-		CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
-		cookieLocaleResolver.setDefaultLocale(Locale.KOREAN);
-		cookieLocaleResolver.setCookieName("lang");
+		/*
+			// Cookie 방식
+			CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+			cookieLocaleResolver.setDefaultLocale(Locale.KOREA);
+			cookieLocaleResolver.setCookieName("lang");
+		*/
 		
-		return resolver;
+		return sessionLocaleResolver;
 	}
 	
 	@Bean
-	public LocaleChangeInterceptor changeInterceptor() {
-		LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-		interceptor.setParamName("lang");
-		return interceptor;
+	public LocaleChangeInterceptor localeChangeInterceptor() {
+		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+		localeChangeInterceptor.setParamName("lang");
+		return localeChangeInterceptor;
 	}
 }

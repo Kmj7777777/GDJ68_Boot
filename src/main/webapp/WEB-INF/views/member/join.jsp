@@ -20,7 +20,7 @@
     	 		<c:import url="/WEB-INF/views/layout/topbar.jsp"></c:import>
     	 		
     	 		<div class="container-fluid">
-					<form:form modelAttribute="memberVO" action="./join" method="POST" enctype="multipart/form-data">
+					<form:form modelAttribute="member" action="./join" method="POST" enctype="multipart/form-data">
 						<div class="form-group">
 							<form:label path="username">User name</form:label>
 						    <form:input path="username" cssClass="form-control" id="username" />

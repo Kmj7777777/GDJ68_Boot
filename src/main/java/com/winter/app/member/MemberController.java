@@ -77,19 +77,19 @@ public class MemberController {
 	*/
 	
 	@GetMapping("join")
-	public void setJoin(@ModelAttribute MemberVO memberVO) {
+	public void setJoin(@ModelAttribute("member") MemberVO memberVO) {
 		
 	}
 	
 	@PostMapping("join")
-	public String setJoin(@Valid MemberVO memberVO, BindingResult bindingResult, MultipartFile photo) throws Exception {
+	public String setJoin(@Valid MemberVO memberVO, BindingResult bindingResult, MultipartFile photo) {
 		// @Valid 애너테이션은 Controller에서만 사용 가능하다.
 		// memberService.testValid(memberVO, bindingResult);
 		
-		boolean check = memberService.getMemberError(memberVO, bindingResult);
+		boolean hasErrors = memberService.getMemberError(memberVO, bindingResult);
 		
 		// memberVO 검증 결과가 bindingResult에 담김
-		if(bindingResult.hasErrors() || check) {
+		if(bindingResult.hasErrors() || hasErrors) {
 			return "member/join";
 		}
 		

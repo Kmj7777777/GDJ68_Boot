@@ -136,22 +136,22 @@ public class MemberService extends DefaultOAuth2UserService implements UserDetai
 	*/
 	
 	// 사용자 정의 검증 : 검증 애너테이션으로 검증하지 못하는 것들을 처리
-	public boolean getMemberError(MemberVO memberVO, BindingResult bindingResult) throws Exception {
-		boolean check = false;
+	public boolean getMemberError(MemberVO memberVO, BindingResult bindingResult) {
+		boolean hasErrors = false;
 		
 		if(!memberVO.getPassword().equals(memberVO.getPasswordCheck())) {
-			check = true;
+			hasErrors = true;
 			bindingResult.rejectValue("passwordCheck", "memberVO.password.equalCheck");
 		}
 		
-		MemberVO checkVO = memberDAO.getMember(memberVO);
+		memberVO = memberDAO.getMember(memberVO);
 		
-		if(checkVO != null) {
-			check = true;
+		if(memberVO != null) {
+			hasErrors = true;
 			bindingResult.rejectValue("username", "memberVO.username.equalCheck");
 		}
 		
-		return check;
+		return hasErrors;
 	}
 	
 	/*

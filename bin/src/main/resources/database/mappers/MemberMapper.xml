@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.winter.app.member.MemberDAO">
+	<select id="getMember" parameterType="MemberVO" resultMap="getMemberResult">
+		SELECT m.*, r.* FROM
+			member m INNER JOIN member_role mr
+				ON m.username = mr.username INNER JOIN role r
+				ON mr.roleNum = r.roleNum
+		WHERE m.username = #{username}
+	</select>
+	
+	<resultMap id="getMemberResult" type="MemberVO">
+		<id column="username" property="username" />
+		<result column="password" property="password" />
+		<result column="name" property="name" />
+		<result column="email" property="email" />
+		<result column="birth" property="birth" />
+		<result column="joinDate" property="joinDate" />
+		<result column="enabled" property="enabled" />
+		
+		<collection property="roles" javaType="List" ofType="RoleVO">
+			<id column="roleNum" property="roleNum" />
+			<result column="roleName" property="roleName" />
+		</collection>
+	</resultMap>
+	
+	<insert id="setJoin" parameterType="MemberVO">
+		INSERT INTO member VALUES(#{username}, #{password}, #{name}, #{email}, #{birth}, now())
+	</insert>
+	
+	<insert id="setMemberRole" parameterType="java.util.Map">
+		INSERT INTO member_role VALUES(#{roleNum}, #{username})
+	</insert>
+</mapper>
