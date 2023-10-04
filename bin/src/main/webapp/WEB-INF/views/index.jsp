@@ -23,7 +23,7 @@
 					<sec:authorize access="isAuthenticated()">
 						<sec:authentication property="name" var="name"></sec:authentication>
 						<sec:authentication property="principal.username" var="vo"></sec:authentication>
-		    	 		<h1><spring:message code="login.welcome" arguments="${name}"></spring:message></h1>
+		    	 		<h1><spring:message code="login.welcome" arguments="${name}" /></h1>
 					</sec:authorize>
 				</div>
 			</div>

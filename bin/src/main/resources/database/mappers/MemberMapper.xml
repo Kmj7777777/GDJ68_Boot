@@ -28,7 +28,8 @@
 	</resultMap>
 	
 	<insert id="setJoin" parameterType="MemberVO">
-		INSERT INTO member VALUES(#{username}, #{password}, #{name}, #{email}, #{birth}, now())
+		INSERT INTO member (username, password, name, email, birth, joinDate)
+		VALUES(#{username}, #{password}, #{name}, #{email}, #{birth}, now())
 	</insert>
 	
 	<insert id="setMemberRole" parameterType="java.util.Map">

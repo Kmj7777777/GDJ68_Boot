@@ -72,8 +72,8 @@ public class SecurityConfig {
 		httpSecurity
 			.cors()
 			.and()
-			// .csrf()
-			// .disable()
+			.csrf()
+			.disable()
 			.authorizeHttpRequests()
 				// .antMatchers("/notice/add").authenticated() // authenticated() : 로그인한 사용자는 허용
 				.antMatchers("/notice/add").hasRole("ADMIN") // hasRole("ADMIN") : ADMIN 권한만 허용
@@ -93,7 +93,7 @@ public class SecurityConfig {
 				.logoutUrl("/member/logout") // 해당 경로로 요청이 오면 로그아웃 처리
 				// .logoutSuccessUrl("/") // 로그아웃 처리 후 Redirect URL
 				.addLogoutHandler(getLogoutAdd())
-				.logoutSuccessHandler(getLogoutHandler())
+				// .logoutSuccessHandler(getLogoutHandler()) // 카카오 로그아웃 처리에 문제가 생기므로 잠시 주석 처리
 				.invalidateHttpSession(true) // HttpSession에 저장된 모든 데이터 제거 : Spring Security는 사용자 인증 및 권한과 관련된 데이터를 HttpSession에 저장하고 관리한다.
 				.deleteCookies("JSESSIONID")
 				.and()
@@ -113,12 +113,12 @@ public class SecurityConfig {
 		return httpSecurity.build();
 	}
 	
-	private SecurityLogoutHandler getLogoutHandler() {
-		return new SecurityLogoutHandler();
-	}
-	
 	private SecurityLogoutAdd getLogoutAdd() {
 		return new SecurityLogoutAdd();
+	}
+	
+	private SecurityLogoutHandler getLogoutHandler() {
+		return new SecurityLogoutHandler();
 	}
 	
 	private SecurityFailHandler getFailHandler() {

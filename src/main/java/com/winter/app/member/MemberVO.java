@@ -36,6 +36,8 @@ public class MemberVO extends MemberInfoVO implements UserDetails, OAuth2User { 
 	
 	private Map<String, Object> attributes;
 	
+	private String accessToken;
+	
 	/*
 		Spring Security는 hasRole과 같은 메서드를 처리할 때
 		사용자가 해당 역할 및 권한을 가지고 있는지 아래 메서드를 통해 확인한다.

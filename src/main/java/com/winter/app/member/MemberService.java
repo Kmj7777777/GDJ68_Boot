@@ -43,11 +43,11 @@ public class MemberService extends DefaultOAuth2UserService implements UserDetai
 		ClientRegistration clientRegistration = userRequest.getClientRegistration();
 		log.info("==================== 소셜 로그인 테스트 ====================");
 		OAuth2User oAuth2User = super.loadUser(userRequest);
-		log.info("==================== {} ====================", oAuth2User);
+		log.info("==================== OAuth2User : {} ====================", oAuth2User);
 		
 		String social = clientRegistration.getRegistrationId(); // kakao, naver 등...
 		if(social.equals("kakao")) {
-			oAuth2User = this.forKakao(oAuth2User);
+			oAuth2User = this.forKakao(oAuth2User, userRequest);
 		}else if(social.equals("naver")) {
 			// ...
 		}else if(social.equals("google")) {
@@ -58,7 +58,7 @@ public class MemberService extends DefaultOAuth2UserService implements UserDetai
 	}
 	
 	@SuppressWarnings("unchecked")
-	private OAuth2User forKakao(OAuth2User oAuth2User) {
+	private OAuth2User forKakao(OAuth2User oAuth2User, OAuth2UserRequest userRequest) {
 		MemberVO memberVO = new MemberVO();
 		// 결과 : {nickname=김민진, profile_image=http://.../img_640x640.jpg, thumbnail_image=http://.../img_110x110.jpg}
 		LinkedHashMap<String, String> properties = oAuth2User.getAttribute("properties");
@@ -77,13 +77,20 @@ public class MemberService extends DefaultOAuth2UserService implements UserDetai
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append(year).append("-").append(month).append("-").append(day);
 		
+		// 사용자가 존재하는지 DB 조회
+		
 		memberVO.setUsername(properties.get("nickname"));
-		memberVO.setName(properties.get("nickname"));
+		// memberVO.setName(properties.get("nickname"));
+		memberVO.setName(oAuth2User.getName()); // 회원 ID 값(3039518324)을 Name에 임시로 대입
 		memberVO.setEmail(kakao_account.get("email").toString());
 		memberVO.setBirth(Date.valueOf(stringBuffer.toString())); // 년도 정보는 필요 없기 때문에 아무 년도나 입력
 		
 		// oAuth2User.getAttributes() : 모든 정보를 다 가지고 있음(이후 추가적인 정보가 필요하다면 이것을 참조하면 될듯)
 		memberVO.setAttributes(oAuth2User.getAttributes());
+		
+		memberVO.setAccessToken(userRequest.getAccessToken().getTokenValue());
+		
+		// 사용자 권한을 DB에서 조회
 		
 		List<RoleVO> roles = new ArrayList<>();
 		RoleVO roleVO = new RoleVO();
